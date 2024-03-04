@@ -1,5 +1,4 @@
 # Spring_Course
-Spring web app
 ## Веб-додаток для генерації меню страв
 ### Functional Requirements
 1. Створення облікового запису;
