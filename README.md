@@ -34,3 +34,40 @@
    - Згенероване меню повинно включати три страви для кожного прийому їжі: сніданок, обід та вечеря.
 10. **Інформація про страви:**
     - Кожна страва має містити певну інформацію: назва, зображення, інгредієнти, а також можливо рецепт і покрокову інструкцію для приготування.
+
+### API request and response. An example:
+```
+GET /api/users/{userId}/generated-menu
+200 OK
+Content-Type: application/json
+```
+```json
+[
+  {
+    "id": 1,
+    "breakfast": {
+      "id": 101,
+      "name": "Oatmeal",
+      "image": "oatmeal.jpg",
+      "ingredients": ["oats", "milk", "fruit"],
+      "recipe": "Combine oats, milk, and your favorite fruit..."
+    },
+    "lunch": {
+      "id": 102,
+      "name": "Grilled Chicken Salad",
+      "image": "chicken_salad.jpg",
+      "ingredients": ["chicken", "lettuce", "tomato", "dressing"],
+      "recipe": "Grill chicken and toss with fresh vegetables and dressing."
+    },
+    "dinner": {
+      "id": 103,
+      "name": "Vegetarian Pasta",
+      "image": "vegetarian_pasta.jpg",
+      "ingredients": ["pasta", "tomato sauce", "vegetables", "cheese"],
+      "recipe": "Cook pasta, mix with tomato sauce, sautéed vegetables, and top with cheese."
+    },
+    "date": "2024-03-01"
+  },
+  // Додаткові елементи для інших днів
+]
+```
