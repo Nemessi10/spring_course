@@ -34,6 +34,51 @@
    - Згенероване меню повинно включати три страви для кожного прийому їжі: сніданок, обід та вечеря.
 10. **Інформація про страви:**
     - Кожна страва має містити певну інформацію: назва, зображення, інгредієнти, а також можливо рецепт і покрокову інструкцію для приготування.
+   
+### Realization of requirements by interface methods:
+```java
+public interface MenuService {
+
+    // Створення облікового запису
+    User createUser(UserDto userDto);
+
+    // Авторизація користувача
+    User authenticateUser(String email, String password);
+
+    // Генерація меню на вказаний проміжок часу (1 день - 1 місяць)
+    List<Menu> generateMenu(Long userId, LocalDate startDate, LocalDate endDate);
+
+    // Видалення однієї чи декількох страв з меню
+    void deleteDishesFromMenu(Long menuId, Set<Long> dishIds);
+
+    // Заміна однієї чи декількох страв в меню на випадкові інші
+    void replaceDishesInMenu(Long menuId, Set<Long> dishIds);
+
+    // Сортування страв за категоріями: сніданок, обід, вечеря
+    List<Dish> sortDishesByCategory(Long userId, DishCategory category);
+
+    // Вказання продуктів, які не повинні входити в страви + запам'ятовування вибору
+    void excludeIngredients(Long userId, Set<String> excludedIngredients);
+
+    // Збереження однієї чи декількох страв до розділу "Улюблені"
+    void saveDishesToFavorites(Long userId, Set<Long> dishIds);
+
+    // Збереження цілого меню до розділу "Улюблені"
+    void saveMenuToFavorites(Long userId, Long menuId);
+
+    // Отримання списку улюблених страв
+    List<Dish> getFavoriteDishes(Long userId);
+
+    // Отримання списку улюблених меню
+    List<Menu> getFavoriteMenus(Long userId);
+
+    // Отримання згенерованого меню для користувача
+    List<Menu> getGeneratedMenu(Long userId);
+
+    // Отримання інформації про страву (назва, зображення, інградієнти, рецепт, інструкція)
+    DishDetails getDishDetails(Long dishId);
+}
+```
 
 ### API request and response. An example:
 ```
