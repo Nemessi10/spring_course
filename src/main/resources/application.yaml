@@ -1,0 +1,15 @@
+spring:
+  freemarker:
+    template-loader-path: "classpath:/templates/"
+    suffix: ".ftl"
+  datasource:
+    url: jdbc:mysql://localhost:3306/menu-app
+    username: nemessi_10
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+
+
