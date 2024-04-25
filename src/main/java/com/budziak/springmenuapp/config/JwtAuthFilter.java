@@ -1,4 +1,3 @@
-/*
 package com.budziak.springmenuapp.config;
 
 import com.budziak.springmenuapp.security.JwtGenerator;
@@ -21,15 +20,11 @@ import java.io.IOException;
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    private final JwtGenerator tokenGenerator;
-
-    private final CustomUserDetailsService userDetailsService;
+    @Autowired
+    private JwtGenerator tokenGenerator;
 
     @Autowired
-    public JwtAuthFilter(JwtGenerator tokenGenerator, CustomUserDetailsService userDetailsService) {
-        this.tokenGenerator = tokenGenerator;
-        this.userDetailsService = userDetailsService;
-    }
+    private CustomUserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -58,4 +53,3 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         return null;
     }
 }
-*/

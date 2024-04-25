@@ -3,6 +3,7 @@ package com.budziak.springmenuapp.repository;
 import com.budziak.springmenuapp.domain.UserEntity;
 import com.budziak.springmenuapp.domain.UserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<UserEntity, Long> {
+public interface UserRepository extends JpaRepository<UserEntity, Long>/* implements JpaSpecificationExecutor*/ {
     List<UserEntity> findAll();
     UserEntity findByEmail(String email);
     Optional<UserEntity> findByUsername(String username);
