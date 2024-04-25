@@ -1,4 +1,3 @@
-/*
 package com.budziak.springmenuapp.config;
 
 import com.budziak.springmenuapp.security.JwtAuthEntryPoint;
@@ -10,47 +9,48 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class  SecurityConfig {
 
-    private final JwtAuthEntryPoint entryPoint;
-    private final CustomUserDetailsService userDetailsService;
-    private final JwtGenerator tokenGenerator;
+    private final JwtAuthEntryPoint authEntryPoint;
+    private final AccessDeniedHandler accessDeniedHandler;
 
     @Autowired
-    public SecurityConfig(JwtAuthEntryPoint entryPoint, CustomUserDetailsService userDetailsService, JwtGenerator tokenGenerator) {
-        this.entryPoint = entryPoint;
-        this.userDetailsService = userDetailsService;
-        this.tokenGenerator = tokenGenerator;
+    public SecurityConfig(JwtAuthEntryPoint authEntryPoint, AccessDeniedHandler accessDeniedHandler) {
+        this.authEntryPoint = authEntryPoint;
+        this.accessDeniedHandler = accessDeniedHandler;
     }
 
-    */
-/*@Bean
+@Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
-                .exceptionHandling()
-                .authenticationEntryPoint(entryPoint)
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeRequests()
-                .antMatchers("/api/auth/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .httpBasic();
-        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-        return http.build();
-    }*//*
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests(
+                        mather ->
+                                mather
+                                        .requestMatchers(
+                                                "/api/auth/**")
+                                        .permitAll())
+                .authorizeHttpRequests(matcher -> matcher.anyRequest().authenticated())
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(AbstractHttpConfigurer::disable)
+                .exceptionHandling(
+                        customizer ->
+                                customizer
+                                        .accessDeniedHandler(accessDeniedHandler)
+                                        .authenticationEntryPoint(authEntryPoint));
+
+    return http.build();
+    }
 
 
     @Bean
@@ -66,7 +66,6 @@ public class  SecurityConfig {
 
     @Bean
     public JwtAuthFilter jwtAuthenticationFilter() {
-        return new JwtAuthFilter(tokenGenerator, userDetailsService);
+        return new JwtAuthFilter();
     }
 }
-*/

@@ -1,4 +1,3 @@
-/*
 package com.budziak.springmenuapp.security;
 
 import io.jsonwebtoken.Claims;
@@ -47,4 +46,3 @@ public class JwtGenerator {
         }
     }
 }
-*/

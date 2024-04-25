@@ -1,4 +1,3 @@
-/*
 package com.budziak.springmenuapp.controller.api;
 
 
@@ -32,16 +31,14 @@ public class AuthRestController {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
     private final JwtGenerator jwtGenerator;
 
     @Autowired
     public AuthRestController(AuthenticationManager authenticationManager, UserRepository userRepository,
-                              RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtGenerator jwtGenerator) {
+                              RoleRepository roleRepository, JwtGenerator jwtGenerator) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
         this.jwtGenerator = jwtGenerator;
     }
 
@@ -67,11 +64,10 @@ public class AuthRestController {
         user.setPassword(registerDto.getPassword());
 
         UserRole roles = roleRepository.findByName("USER").get();
-        user.setRoles(Collections.singletonList(roles));
+        user.setUserRoles(Collections.singleton(roles));
 
         userRepository.save(user);
 
         return new ResponseEntity<>("User registered success!", HttpStatus.OK);
     }
 }
-*/
