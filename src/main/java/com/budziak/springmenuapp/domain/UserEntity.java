@@ -17,8 +17,6 @@ public class UserEntity {
     private Long id;
     @Column(unique = true)
     private String username;
-    @Column(unique = true)
-    private String email;
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

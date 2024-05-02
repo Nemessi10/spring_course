@@ -10,6 +10,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
+  mvc:
+    static-path-pattern: /static/**
 
-
+admin.default:
+  username: admin
+  password: admin
 

@@ -2,6 +2,7 @@ package com.budziak.springmenuapp.controller.api;
 
 import com.budziak.springmenuapp.domain.Menu;
 import com.budziak.springmenuapp.domain.UserEntity;
+import com.budziak.springmenuapp.dto.GenerateMenuDto;
 import com.budziak.springmenuapp.dto.MenuDto;
 import com.budziak.springmenuapp.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +36,9 @@ public class MenuRestController {
         return ResponseEntity.notFound().build();
     }
 
-    @PostMapping
-    public ResponseEntity<Menu> createMenu(@RequestBody MenuDto menu, Long userId) {
-        Menu createdMenu = menuService.createMenu(menu, userId);
+    @PostMapping("/new")
+    public ResponseEntity<Menu> generateMenu(@RequestBody GenerateMenuDto menuDto) {
+        Menu createdMenu = menuService.generateMenu(menuDto);
         return new ResponseEntity<>(createdMenu, HttpStatus.CREATED);
     }
 

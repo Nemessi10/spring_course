@@ -8,6 +8,8 @@ import com.budziak.springmenuapp.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -16,17 +18,26 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-public class UserService /*, UserDetailsService*/ { // for business logic
+public class UserService {
 
+    private final String defaultAdminUsername;
+
+    private final String defaultAdminPassword;
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
-    //private final PasswordEncoder passwordEncoder;
-
     @Autowired
-    public UserService(UserRepository userRepository, RoleRepository roleRepository/*, PasswordEncoder passwordEncoder*/) {
+    public UserService(
+            @Value("${admin.default.username}") String defaultAdminUsername,
+            @Value("${admin.default.password}") String defaultAdminPassword,
+            PasswordEncoder passwordEncoder,
+            UserRepository userRepository,
+            RoleRepository roleRepository) {
+        this.defaultAdminUsername = defaultAdminUsername;
+        this.defaultAdminPassword = defaultAdminPassword;
+        this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
-        //this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
     }
 
@@ -65,9 +76,8 @@ public class UserService /*, UserDetailsService*/ { // for business logic
 
         // Створюємо об'єкт користувача
         UserEntity userEntity = new UserEntity();
-        userEntity.setUsername("Admin");
-        userEntity.setPassword("admin");
-        userEntity.setEmail("roman.budziak.22@pnu.edu.ua");
+        userEntity.setUsername(defaultAdminUsername);
+        userEntity.setPassword(passwordEncoder.encode(defaultAdminPassword));
 
         // Отримуємо об'єкт ролі з бази даних
         UserRole role = roleRepository.findByName("ADMIN")
@@ -82,38 +92,10 @@ public class UserService /*, UserDetailsService*/ { // for business logic
         log.info("Default admin user created successfully");
     }
 
-
-
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
     public void deleteUserByUsername(String username) {
         userRepository.deleteByUsername(username);
     }
-
-    /*public void registerUser(UserDto userDto) throws UserAlreadyExistException {
-
-         // check if user already exist
-        if(checkIfUserExist(userDto.getEmail())) {
-            throw new UserAlreadyExistException("User already exist for this email");
-        }
-
-        User user = new User();
-        BeanUtils.copyProperties(userDto, user);
-        encodePassword(user, userDto);
-        userRepository.save(user);
-    }
-
-    public boolean checkIfUserExist(String email) {
-        return userRepository.findByEmail(email) != null;
-    }
-
-    private void encodePassword(User user, UserDto userDto) {
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
-    }*/
 }

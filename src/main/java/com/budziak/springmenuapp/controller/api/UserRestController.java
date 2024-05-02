@@ -38,12 +38,6 @@ public class UserRestController {
         return new ResponseEntity<>(createdUserEntity, HttpStatus.CREATED);
     }
 
-    /*@PostMapping("/register")
-    public ResponseEntity<User> registerUser(@RequestBody UserDto user) throws UserAlreadyExistException {
-        userService.registerUser(user);
-        return ResponseEntity.ok().build();
-    }*/
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);

@@ -1,6 +1,7 @@
 package com.budziak.springmenuapp.controller.web;
 
 import com.budziak.springmenuapp.domain.Menu;
+import com.budziak.springmenuapp.dto.GenerateMenuDto;
 import com.budziak.springmenuapp.dto.MenuDto;
 import com.budziak.springmenuapp.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +30,11 @@ public class MenuController {
         return "menu/index";
     }
 
-    @PostMapping("/new")
-    public String createMenu(MenuDto menuDto, Long userId) {
-        menuService.createMenu(menuDto, userId);
+    /*@PostMapping("/new")
+    public String createMenu(GenerateMenuDto menuDto, Long userId) {
+        menuService.generateMenu(menuDto, userId);
         return "redirect:/menus";
-    }
+    }*/
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMenu(@PathVariable Long id) {

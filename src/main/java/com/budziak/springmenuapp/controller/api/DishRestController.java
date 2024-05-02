@@ -21,9 +21,16 @@ public class DishRestController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Dish>> getAllMenus() {
+    public ResponseEntity<List<Dish>> getAllDishes() {
         List<Dish> dishes = dishService.getAllDishes();
-        return new ResponseEntity<>(dishes, HttpStatus.OK);
+
+        if (dishes == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        else if (dishes.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        else
+            return new ResponseEntity<>(HttpStatus.OK);
+
     }
 
     @GetMapping("/{id}")

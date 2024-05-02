@@ -43,4 +43,12 @@ public class DishService {
     public void deleteDish(Long id) {
         dishRepository.deleteById(id);
     }
+
+    public Dish findByName(String name) {
+        return dishRepository.findByName(name);
+    }
+
+    public void save(Dish dish) {
+        dishRepository.save(dish);
+    }
 }
