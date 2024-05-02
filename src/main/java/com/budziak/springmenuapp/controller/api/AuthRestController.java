@@ -31,7 +31,6 @@ public class AuthRestController {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
     private final JwtGenerator jwtGenerator;
 
     @Autowired
@@ -41,10 +40,11 @@ public class AuthRestController {
             RoleRepository roleRepository,
             PasswordEncoder passwordEncoder,
             JwtGenerator jwtGenerator) {
+    public AuthRestController(AuthenticationManager authenticationManager, UserRepository userRepository,
+                              RoleRepository roleRepository, JwtGenerator jwtGenerator) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
         this.jwtGenerator = jwtGenerator;
     }
 
