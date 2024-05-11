@@ -5,12 +5,17 @@ import com.budziak.springmenuapp.domain.Menu;
 import com.budziak.springmenuapp.domain.UserEntity;
 import com.budziak.springmenuapp.dto.GenerateMenuDto;
 import com.budziak.springmenuapp.dto.MenuDto;
+import com.budziak.springmenuapp.exeption.DishNotFoundException;
+import com.budziak.springmenuapp.exeption.MenuNotFoundException;
 import com.budziak.springmenuapp.repository.DishRepository;
 import com.budziak.springmenuapp.repository.MenuRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -45,34 +50,17 @@ public class MenuService {
         return menuRepository.findByDate(date);
     }
 
-    /*public Menu generateMenu(GenerateMenuDto menuDto, Long userId) {
-        UserEntity userEntity = userService.getUserById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-        List<Dish> breakfastDishes = dishRepository.findByCategory("Breakfast");
-        List<Dish> lunchDishes = dishRepository.findByCategory("Lunch");
-        List<Dish> dinnerDishes = dishRepository.findByCategory("Dinner");
-
-        if (breakfastDishes.isEmpty() || lunchDishes.isEmpty() || dinnerDishes.isEmpty()) {
-            throw new IllegalStateException("Not enough dishes in each category to generate a menu");
+    public List<Menu> generateMenus(GenerateMenuDto userId, LocalDate startDate, LocalDate endDate) {
+        List<Menu> menus = new ArrayList<>();
+        for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
+            Menu menu = generateMenusForDateRange(userId, date);
+            menus.add(menu);
         }
+        return menus;
+    }
 
-        Dish breakfast = breakfastDishes.get((int) (Math.random() * breakfastDishes.size()));
-        Dish lunch = lunchDishes.get((int) (Math.random() * lunchDishes.size()));
-        Dish dinner = dinnerDishes.get((int) (Math.random() * dinnerDishes.size()));
 
-        Menu menu = Menu.builder()
-                .userEntity(userEntity)
-                .breakfast(breakfast)
-                .lunch(lunch)
-                .dinner(dinner)
-                .date(menuDto.getDate())
-                .build();
-
-        return menuRepository.save(menu);
-    }*/
-
-    public Menu generateMenu(GenerateMenuDto menuDto) {
+    private Menu generateMenusForDateRange(GenerateMenuDto menuDto, LocalDate date) {
 
         UserEntity userId = userService.getUserById(menuDto.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -88,7 +76,6 @@ public class MenuService {
                 .noneMatch(dish -> dish.getCategory().equals("Dinner"))) {
             throw new IllegalStateException("Not enough dishes in each category to generate a menu");
         }
-
 
         Collections.shuffle(allDishes);
 
@@ -112,13 +99,49 @@ public class MenuService {
                 .breakfast(breakfast)
                 .lunch(lunch)
                 .dinner(dinner)
-                .date(menuDto.getDate())
+                .date(date)
                 .build();
         return menuRepository.save(menu);
     }
+
+    public void replaceDishInMenu(Long menuId, Long dishId) throws MenuNotFoundException, DishNotFoundException {
+
+        Menu menu = menuRepository.findById(menuId).orElseThrow(MenuNotFoundException::new);
+        Dish oldDish = dishRepository.findById(dishId).orElseThrow(DishNotFoundException::new);
+
+        List<Dish> replacementDishes = dishRepository.findByCategory(oldDish.getCategory());
+        Collections.shuffle(replacementDishes);
+        Dish newDish = replacementDishes.get(0);
+
+        switch (oldDish.getCategory()) {
+            case "Breakfast" -> menu.setBreakfast(newDish);
+            case "Lunch" -> menu.setLunch(newDish);
+            case "Dinner" -> menu.setDinner(newDish);
+        }
+
+        menuRepository.save(menu);
+    }
+
 
 
     public void deleteMenu(Long id) {
         menuRepository.deleteById(id);
     }
+
+    public void removeDishFromMenu(Long menuId, Long dishId) throws MenuNotFoundException, DishNotFoundException {
+        Menu menu = menuRepository.findById(menuId).orElseThrow(MenuNotFoundException::new);
+
+        if (menu.getBreakfast() != null && menu.getBreakfast().getId().equals(dishId)) {
+            menu.setBreakfast(null);
+        } else if (menu.getLunch() != null && menu.getLunch().getId().equals(dishId)) {
+            menu.setLunch(null);
+        } else if (menu.getDinner() != null && menu.getDinner().getId().equals(dishId)) {
+            menu.setDinner(null);
+        } else {
+            throw new DishNotFoundException();
+        }
+
+        menuRepository.save(menu);
+    }
+
 }

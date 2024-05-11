@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 @Data
 @Builder(toBuilder = true)
@@ -18,5 +19,5 @@ public class MenuDto {
     private Dish breakfast;
     private Dish lunch;
     private Dish dinner;
-    private Date date;
+    private LocalDate date;
 }

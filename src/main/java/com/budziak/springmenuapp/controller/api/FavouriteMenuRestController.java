@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/favourites")
+@RequestMapping("api/favourite-menus")
 public class FavouriteMenuRestController {
 
     private final FavouriteMenuService favouriteMenuService;
@@ -21,21 +21,14 @@ public class FavouriteMenuRestController {
         this.favouriteMenuService = favouriteMenuService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<FavouriteMenu>> getAllFavourites() {
-        List<FavouriteMenu> favouriteMenus = favouriteMenuService.getAllFavourite();
-        return new ResponseEntity<>(favouriteMenus, HttpStatus.OK);
-    }
+    @PostMapping("/new/{userId}/{menuId}")
+    public ResponseEntity<?> addMenuToFavourites(@PathVariable Long userId, @PathVariable Long menuId) {
 
-    @PostMapping
-    public ResponseEntity<FavouriteMenu> createFavourite(@RequestBody FavouriteMenuDto favouriteMenuDto, Long userId) {
-        FavouriteMenu createdFavouriteMenu = favouriteMenuService.createFavourite(favouriteMenuDto, userId);
-        return new ResponseEntity<>(createdFavouriteMenu, HttpStatus.CREATED);
-    }
-
-    @DeleteMapping
-    public ResponseEntity<FavouriteMenu> deleteFavourite(@PathVariable Long id) {
-        favouriteMenuService.deleteFavourite(id);
-        return ResponseEntity.noContent().build();
+        try {
+            favouriteMenuService.addMenuToFavourites(userId, menuId);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

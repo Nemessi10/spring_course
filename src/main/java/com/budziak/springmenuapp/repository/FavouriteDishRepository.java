@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FavouriteDishRepository extends JpaRepository<FavouriteDish, Long>  {
+
+    FavouriteDish findByUserEntityIdAndDishId(Long userId, Long dishId);
 }

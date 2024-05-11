@@ -8,8 +8,6 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
-
 @Component
 public class DishesLoader implements ApplicationListener<ContextRefreshedEvent> {
 
@@ -24,8 +22,7 @@ public class DishesLoader implements ApplicationListener<ContextRefreshedEvent> 
     @Transactional
     public void onApplicationEvent(@NonNull final ContextRefreshedEvent event) {
         if (alreadySetup) return;
-        //spring.mvc.static-path-pattern=/static/**
-        //UUID.randomUUID().toString();
+
         // Create dishes
         createDishIfNotExists("Pancakes with Berries", "pancakes_with_berries.jpg",
                 "Flour, eggs, milk, sugar, butter, berries",
@@ -50,7 +47,7 @@ public class DishesLoader implements ApplicationListener<ContextRefreshedEvent> 
                         2. Cook pasta according to package instructions.
                         3. Combine cooked pasta, meatballs, and tomato sauce. Serve hot.""",
                 "Dinner");
-
+        
         alreadySetup = true;
     }
 

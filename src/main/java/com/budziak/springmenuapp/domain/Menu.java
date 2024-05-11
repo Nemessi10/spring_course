@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -35,5 +36,5 @@ public class Menu {
     @JoinColumn(name = "dinner_id")
     private Dish dinner;
 
-    private Date date;
+    private LocalDate date;
 }

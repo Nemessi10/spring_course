@@ -31,14 +31,20 @@ public class AuthRestController {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
     private final JwtGenerator jwtGenerator;
 
     @Autowired
-    public AuthRestController(AuthenticationManager authenticationManager, UserRepository userRepository,
-                              RoleRepository roleRepository, JwtGenerator jwtGenerator) {
+    public AuthRestController(
+            AuthenticationManager authenticationManager,
+            UserRepository userRepository,
+            RoleRepository roleRepository,
+            PasswordEncoder passwordEncoder,
+            JwtGenerator jwtGenerator) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
         this.jwtGenerator = jwtGenerator;
     }
 
@@ -61,7 +67,7 @@ public class AuthRestController {
 
         UserEntity user = new UserEntity();
         user.setUsername(registerDto.getUsername());
-        user.setPassword(registerDto.getPassword());
+        user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
 
         UserRole roles = roleRepository.findByName("USER").get();
         user.setUserRoles(Collections.singleton(roles));

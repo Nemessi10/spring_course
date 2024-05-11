@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FavouriteMenuRepository extends JpaRepository<FavouriteMenu, Long> {
+
+    FavouriteMenu findByUserEntityIdAndMenuId(Long userId, Long menuId);
 }
