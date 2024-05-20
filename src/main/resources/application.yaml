@@ -13,7 +13,10 @@ spring:
   mvc:
     static-path-pattern: /static/**
 
-admin.default:
-  username: admin
-  password: admin
+admin:
+  default:
+    username: admin
+    password: admin
 
+upload:
+  path: /static/images

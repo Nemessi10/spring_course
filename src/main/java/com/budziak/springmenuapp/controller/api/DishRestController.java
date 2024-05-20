@@ -3,13 +3,23 @@ package com.budziak.springmenuapp.controller.api;
 import com.budziak.springmenuapp.domain.Dish;
 import com.budziak.springmenuapp.dto.DishDto;
 import com.budziak.springmenuapp.service.DishService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.security.core.authority.AuthorityUtils;
 
+
+import java.io.IOException;
 import java.util.List;
 
+import static org.springframework.security.authorization.AuthorityReactiveAuthorizationManager.hasAuthority;
+
+@Slf4j
 @RestController
 @RequestMapping("/api/dishes")
 public class DishRestController {
@@ -22,6 +32,7 @@ public class DishRestController {
 
     @GetMapping
     public ResponseEntity<List<Dish>> getAllDishes() {
+
         List<Dish> dishes = dishService.getAllDishes();
 
         if (dishes == null)
@@ -34,19 +45,33 @@ public class DishRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Dish> getMenuById(@PathVariable Long id) {
+    public ResponseEntity<Dish> getDishById(@PathVariable Long id) {
         dishService.getDishById(id);
         return ResponseEntity.notFound().build();
     }
 
+    /*@ResponseStatus
     @PostMapping
-    public ResponseEntity<Dish> createMenu(@RequestBody DishDto dish) {
-        Dish createdDish = dishService.createDish(dish);
-        return new ResponseEntity<>(createdDish, HttpStatus.CREATED);
-    }
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Dish> createDish(@RequestBody DishDto dishDto, @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
+
+        if (!SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(AuthorityUtils.createAuthorityList("ADMIN").get(0))) {
+            log.error("Користувач не має ролі ADMIN, доступ заборонено");
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        Dish dish = dishService.createDish(dishDto, imageFile);
+        return new ResponseEntity<>(dish, HttpStatus.CREATED);
+    }*/
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Dish> deleteMenu(@PathVariable Long id) {
+
+        if (!SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(AuthorityUtils.createAuthorityList("ADMIN").get(0))) {
+            log.error("Користувач не має ролі ADMIN, доступ заборонено");
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
         dishService.deleteDish(id);
         return ResponseEntity.noContent().build();
     }

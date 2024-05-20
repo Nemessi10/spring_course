@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DishDto {
     private String name;
-    private String image;
     private String ingredients;
     private String recipe;
     private String category;

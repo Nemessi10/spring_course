@@ -57,7 +57,7 @@ public class DishesLoader implements ApplicationListener<ContextRefreshedEvent> 
         if (dish == null) {
             dish = new Dish();
             dish.setName(name);
-            dish.setImage(image);
+            //dish.setImage(image);
             dish.setIngredients(ingredients);
             dish.setRecipe(recipe);
             dish.setCategory(category);
