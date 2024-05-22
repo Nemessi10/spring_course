@@ -19,4 +19,4 @@ admin:
     password: admin
 
 upload:
-  path: /static/images
+  path: D:/ipz11_budziak/spring_course/spring-menu-app/src/main/resources/static/images/

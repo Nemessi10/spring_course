@@ -26,19 +26,19 @@ public class ImageService {
         this.imageRepository = imageRepository;
     }
 
-    public String uploadImageToFileSystem(MultipartFile file) throws IOException {
+    public Image uploadImageToFileSystem(MultipartFile file) throws IOException {
         String filePath = folderPath + file.getOriginalFilename();
 
-        imageRepository.save(
-                Image.builder()
+        Image image = Image.builder()
                 .name(file.getOriginalFilename())
                 .type(file.getContentType())
                 .filePath(filePath)
-                .build());
+                .build();
 
+        imageRepository.save(image);
         file.transferTo(new File(filePath));
 
-        return "file uploaded successfully : " + filePath;
+        return image;
     }
 
     public byte[] downloadImageFromFileSystem(String fileName) throws IOException {

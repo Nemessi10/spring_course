@@ -1,6 +1,7 @@
 package com.budziak.springmenuapp.service;
 
 import com.budziak.springmenuapp.domain.Dish;
+import com.budziak.springmenuapp.domain.Image;
 import com.budziak.springmenuapp.dto.DishDto;
 import com.budziak.springmenuapp.repository.DishRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -33,19 +34,19 @@ public class DishService {
         return dishRepository.findById(id);
     }
 
-    /*public Dish createDish(DishDto dishDto, MultipartFile imageFile) throws IOException {
+    public Dish createDish(DishDto dishDto, MultipartFile imageFile) throws IOException {
 
-        String imageName = imageService.uploadImageToFileSystem(imageFile);
+        Image image = imageService.uploadImageToFileSystem(imageFile);
         Dish dish = Dish.builder()
                 .name(dishDto.getName())
-                .image(imageName)
+                .image(image)
                 .ingredients(dishDto.getIngredients())
                 .recipe(dishDto.getRecipe())
                 .category(dishDto.getCategory())
                 .build();
 
         return dishRepository.save(dish);
-    }*/
+    }
 
     public void deleteDish(Long id) {
         dishRepository.deleteById(id);

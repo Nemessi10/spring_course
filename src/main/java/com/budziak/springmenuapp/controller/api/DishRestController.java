@@ -3,6 +3,8 @@ package com.budziak.springmenuapp.controller.api;
 import com.budziak.springmenuapp.domain.Dish;
 import com.budziak.springmenuapp.dto.DishDto;
 import com.budziak.springmenuapp.service.DishService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.annotation.MultipartConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,7 @@ import static org.springframework.security.authorization.AuthorityReactiveAuthor
 
 @Slf4j
 @RestController
+@MultipartConfig
 @RequestMapping("/api/dishes")
 public class DishRestController {
     private final DishService dishService;
@@ -50,10 +53,8 @@ public class DishRestController {
         return ResponseEntity.notFound().build();
     }
 
-    /*@ResponseStatus
-    @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Dish> createDish(@RequestBody DishDto dishDto, @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
+    /*@PostMapping
+    public ResponseEntity<Dish> createDish(@RequestParam(value = "json") DishDto dishDto, @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
 
         if (!SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(AuthorityUtils.createAuthorityList("ADMIN").get(0))) {
             log.error("Користувач не має ролі ADMIN, доступ заборонено");
@@ -63,6 +64,30 @@ public class DishRestController {
         Dish dish = dishService.createDish(dishDto, imageFile);
         return new ResponseEntity<>(dish, HttpStatus.CREATED);
     }*/
+
+    //@ResponseStatus
+    //@PreAuthorize("hasRole('ADMIN')")
+    @PostMapping
+    public ResponseEntity<Dish> createDish(@RequestParam(value = "json") String dishDtoJson, @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        DishDto dishDto;
+
+        try {
+            dishDto = objectMapper.readValue(dishDtoJson, DishDto.class);
+        } catch (Exception e) {
+            log.error("Помилка конвертації JSON у об'єкт DishDto", e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        if (!SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(AuthorityUtils.createAuthorityList("ADMIN").get(0))) {
+            log.error("Користувач не має ролі ADMIN, доступ заборонено");
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        Dish dish = dishService.createDish(dishDto, imageFile);
+        return new ResponseEntity<>(dish, HttpStatus.CREATED);
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Dish> deleteMenu(@PathVariable Long id) {
