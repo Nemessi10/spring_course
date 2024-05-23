@@ -1,11 +1,12 @@
 package com.budziak.springmenuapp.controller.api;
 
 import com.budziak.springmenuapp.domain.UserEntity;
-import com.budziak.springmenuapp.dto.UserDto;
+import com.budziak.springmenuapp.exeption.NoContentException;
+import com.budziak.springmenuapp.exeption.ResourceNotFoundException;
 import com.budziak.springmenuapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,26 +22,32 @@ public class UserRestController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<UserEntity>> getAllUsers() {
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public List<UserEntity> getAllUsers() {
+
         List<UserEntity> userEntities = userService.findAll();
-        return new ResponseEntity<>(userEntities, HttpStatus.OK);
+
+        if (userEntities == null)
+            throw new ResourceNotFoundException();
+        else if (userEntities.isEmpty())
+            throw new NoContentException();
+        else return userEntities;
     }
 
-    @GetMapping("/user")
-    public UserEntity getUserById(@RequestParam Long id) {
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserEntity getUserById(@PathVariable Long id) {
+
         return userService.getUserById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User by " + id + " id not found"));
-    }
-
-    @PostMapping
-    public ResponseEntity<UserEntity> createUser(@RequestBody UserDto user) {
-        UserEntity createdUserEntity = userService.createUser(user);
-        return new ResponseEntity<>(createdUserEntity, HttpStatus.CREATED);
+                .orElseThrow(() -> new ResourceNotFoundException("User by " + id + " id not found"));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public void deleteUser(@PathVariable Long id) {
+
         userService.deleteUser(id);
-        return ResponseEntity.noContent().build();
     }
 }

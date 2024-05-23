@@ -1,5 +1,6 @@
 package com.budziak.springmenuapp.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +22,7 @@ public class Image {
     private String type;
     private String filePath;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "image")
     @JoinColumn(name = "dish_id")
     private Dish dish;

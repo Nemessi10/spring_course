@@ -1,14 +1,10 @@
 package com.budziak.springmenuapp.controller.api;
 
-import com.budziak.springmenuapp.domain.FavouriteMenu;
-import com.budziak.springmenuapp.dto.FavouriteMenuDto;
+import com.budziak.springmenuapp.exeption.*;
 import com.budziak.springmenuapp.service.FavouriteMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("api/favourite-menus")
@@ -22,13 +18,17 @@ public class FavouriteMenuRestController {
     }
 
     @PostMapping("/new/{userId}/{menuId}")
-    public ResponseEntity<?> addMenuToFavourites(@PathVariable Long userId, @PathVariable Long menuId) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addMenuToFavourites(@PathVariable Long userId, @PathVariable Long menuId) {
 
         try {
             favouriteMenuService.addMenuToFavourites(userId, menuId);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (MenuNotFoundException e) {
+            throw new ResourceNotFoundException("Menu not found with id " + menuId);
+        } catch (MenuAlreadyInFavoritesException e) {
+            throw new BadRequestException("Menu already exists in favourites for user " + userId);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            throw new InternalServerErrorException("An unexpected error occurred while adding menu to favourites");
         }
     }
 }

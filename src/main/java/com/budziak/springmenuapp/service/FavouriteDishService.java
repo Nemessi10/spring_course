@@ -17,6 +17,7 @@ public class FavouriteDishService {
     }
 
     public void addDishToFavourites(Long userId, Long dishId) {
+
         FavouriteDish favouriteDish = favouriteDishRepository.findByUserEntityIdAndDishId(userId, dishId);
         if (favouriteDish == null) {
             favouriteDishRepository.save(FavouriteDish.builder()

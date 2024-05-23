@@ -22,6 +22,7 @@ public class FavouriteMenuService {
     }
 
     public void addMenuToFavourites(Long userId, Long menuId) {
+
         FavouriteMenu favouriteMenu = favouriteMenuRepository.findByUserEntityIdAndMenuId(userId, menuId);
         if(favouriteMenu == null) {
             favouriteMenuRepository.save(FavouriteMenu.builder()

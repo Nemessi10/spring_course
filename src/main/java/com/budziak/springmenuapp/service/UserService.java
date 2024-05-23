@@ -66,27 +66,23 @@ public class UserService {
 
     @Transactional
     public void createDefaultAdminIfNotExist() {
-        boolean anyAdminExist = userRepository.isAnyAdminExist(roleRepository.findByName("ADMIN")
-                .orElseThrow(() -> new IllegalStateException("Role 'ADMIN' not found. Cannot create default admin user")));
+        boolean anyAdminExist = userRepository.isAnyAdminExist(roleRepository.findByName("ROLE_ADMIN")
+                .orElseThrow(() -> new IllegalStateException("Role 'ROLE_ADMIN' not found. Cannot create default admin user")));
 
         if (anyAdminExist) {
             log.info("Admin already exists. Skipping creation of default admin user");
             return;
         }
 
-        // Створюємо об'єкт користувача
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(defaultAdminUsername);
         userEntity.setPassword(passwordEncoder.encode(defaultAdminPassword));
 
-        // Отримуємо об'єкт ролі з бази даних
-        UserRole role = roleRepository.findByName("ADMIN")
-                .orElseThrow(() -> new IllegalStateException("Role 'ADMIN' not found. Cannot create default admin user"));
+        UserRole role = roleRepository.findByName("ROLE_ADMIN")
+                .orElseThrow(() -> new IllegalStateException("Role 'ROLE_ADMIN' not found. Cannot create default admin user"));
 
-        // Додаємо роль користувачеві
         userEntity.setUserRoles(Collections.singleton(role));
 
-        // Зберігаємо користувача в базі даних
         userRepository.save(userEntity);
 
         log.info("Default admin user created successfully");

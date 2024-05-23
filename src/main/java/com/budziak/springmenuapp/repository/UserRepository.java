@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<UserEntity, Long>/* implements JpaSpecificationExecutor*/ {
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
     List<UserEntity> findAll();
     Optional<UserEntity> findByUsername(String username);
     Boolean existsByUsername(String username);

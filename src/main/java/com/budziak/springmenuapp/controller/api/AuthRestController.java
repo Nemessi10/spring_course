@@ -6,21 +6,19 @@ import com.budziak.springmenuapp.domain.UserRole;
 import com.budziak.springmenuapp.dto.AuthResponseDto;
 import com.budziak.springmenuapp.dto.LoginDto;
 import com.budziak.springmenuapp.dto.RegisterDto;
+import com.budziak.springmenuapp.exeption.BadRequestException;
+import com.budziak.springmenuapp.exeption.InternalServerErrorException;
 import com.budziak.springmenuapp.repository.RoleRepository;
 import com.budziak.springmenuapp.repository.UserRepository;
 import com.budziak.springmenuapp.security.JwtGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 
@@ -49,31 +47,37 @@ public class AuthRestController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDto> login(@RequestBody LoginDto loginDto) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public AuthResponseDto login(@RequestBody LoginDto loginDto) {
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDto.getUsername(),
                         loginDto.getPassword()));
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtGenerator.generateToken(authentication);
-        return new ResponseEntity<>(new AuthResponseDto(token), HttpStatus.OK);
+
+        return new AuthResponseDto(token);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public void register(@RequestBody RegisterDto registerDto) {
+
         if (userRepository.existsByUsername(registerDto.getUsername())) {
-            return new ResponseEntity<>("Username is taken!", HttpStatus.BAD_REQUEST);
+            throw new BadRequestException("Username is taken!");
         }
 
         UserEntity user = new UserEntity();
         user.setUsername(registerDto.getUsername());
         user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
 
-        UserRole roles = roleRepository.findByName("USER").get();
+        UserRole roles = roleRepository.findByName("USER")
+                .orElseThrow(() -> new InternalServerErrorException("An unexpected error"));
+
         user.setUserRoles(Collections.singleton(roles));
 
         userRepository.save(user);
-
-        return new ResponseEntity<>("User registered success!", HttpStatus.OK);
     }
 }

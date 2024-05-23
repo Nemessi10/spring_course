@@ -1,6 +1,7 @@
 package com.budziak.springmenuapp.setup;
 
 import com.budziak.springmenuapp.domain.Dish;
+import com.budziak.springmenuapp.repository.DishRepository;
 import com.budziak.springmenuapp.service.DishService;
 import lombok.NonNull;
 import org.springframework.context.ApplicationListener;
@@ -11,11 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public class DishesLoader implements ApplicationListener<ContextRefreshedEvent> {
 
+    private final DishRepository dishRepository;
     private boolean alreadySetup = false;
-    private final DishService dishService;
 
-    public DishesLoader(DishService dishService) {
-        this.dishService = dishService;
+    public DishesLoader(DishRepository dishRepository) {
+        this.dishRepository = dishRepository;
     }
 
     @Override
@@ -53,7 +54,7 @@ public class DishesLoader implements ApplicationListener<ContextRefreshedEvent> 
 
     @Transactional
     protected void createDishIfNotExists(String name, String image, String ingredients, String recipe, String category) {
-        Dish dish = dishService.findByName(name);
+        Dish dish = dishRepository.findByName(name);
         if (dish == null) {
             dish = new Dish();
             dish.setName(name);
@@ -62,7 +63,7 @@ public class DishesLoader implements ApplicationListener<ContextRefreshedEvent> 
             dish.setRecipe(recipe);
             dish.setCategory(category);
 
-            dishService.save(dish);
+            dishRepository.save(dish);
         }
     }
 }
