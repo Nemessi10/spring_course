@@ -27,18 +27,6 @@ public class MenuController {
     public String getAllMenus(Model model) {
         List<Menu> menus = menuService.getAllMenus();
         model.addAttribute("menus", menus);
-        return "menu/index";
-    }
-
-    /*@PostMapping("/new")
-    public String createMenu(GenerateMenuDto menuDto, Long userId) {
-        menuService.generateMenu(menuDto, userId);
-        return "redirect:/menus";
-    }*/
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMenu(@PathVariable Long id) {
-        menuService.deleteMenu(id);
-        return ResponseEntity.noContent().build();
+        return "menus";
     }
 }

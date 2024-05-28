@@ -42,15 +42,8 @@ public class MenuService {
         return menuRepository.findById(id);
     }
 
-    public List<Menu> getMenusByUser(UserEntity userEntity) {
-        return menuRepository.findByUserEntity(userEntity);
-    }
-
-    public List<Menu> getMenusByDate(Date date) {
-        return menuRepository.findByDate(date);
-    }
-
     public List<Menu> generateMenus(GenerateMenuDto userId, LocalDate startDate, LocalDate endDate) {
+
         List<Menu> menus = new ArrayList<>();
         for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
             Menu menu = generateMenusForDateRange(userId, date);
@@ -122,13 +115,12 @@ public class MenuService {
         menuRepository.save(menu);
     }
 
-
-
     public void deleteMenu(Long id) {
         menuRepository.deleteById(id);
     }
 
     public void removeDishFromMenu(Long menuId, Long dishId) throws MenuNotFoundException, DishNotFoundException {
+
         Menu menu = menuRepository.findById(menuId).orElseThrow(MenuNotFoundException::new);
 
         if (menu.getBreakfast() != null && menu.getBreakfast().getId().equals(dishId)) {

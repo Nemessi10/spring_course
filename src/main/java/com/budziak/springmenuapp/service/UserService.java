@@ -49,23 +49,9 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public Optional<UserEntity> getUserByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
-
-    public UserEntity createUser(UserDto userDto) {
-
-        UserEntity userEntity = UserEntity.builder()
-                .username(userDto.getUsername())
-                .password((userDto.getPassword()))
-                .userRoles(userDto.getRoles())
-                .build();
-
-        return userRepository.save(userEntity);
-    }
-
     @Transactional
     public void createDefaultAdminIfNotExist() {
+
         boolean anyAdminExist = userRepository.isAnyAdminExist(roleRepository.findByName("ROLE_ADMIN")
                 .orElseThrow(() -> new IllegalStateException("Role 'ROLE_ADMIN' not found. Cannot create default admin user")));
 
@@ -90,8 +76,5 @@ public class UserService {
 
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
-    }
-    public void deleteUserByUsername(String username) {
-        userRepository.deleteByUsername(username);
     }
 }

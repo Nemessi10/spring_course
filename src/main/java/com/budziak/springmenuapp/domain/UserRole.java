@@ -1,5 +1,6 @@
 package com.budziak.springmenuapp.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +19,7 @@ public class UserRole {
 
     private String name;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "userRoles")
     private List<UserEntity> users;
 }

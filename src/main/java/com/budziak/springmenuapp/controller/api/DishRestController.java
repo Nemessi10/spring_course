@@ -5,12 +5,15 @@ import com.budziak.springmenuapp.dto.DishDto;
 import com.budziak.springmenuapp.exeption.NoContentException;
 import com.budziak.springmenuapp.exeption.ResourceNotFoundException;
 import com.budziak.springmenuapp.service.DishService;
+import com.budziak.springmenuapp.service.ImageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.annotation.MultipartConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,11 +27,14 @@ import java.util.List;
 @MultipartConfig
 @RequestMapping("/api/dishes")
 public class DishRestController {
+
     private final DishService dishService;
+    private final ImageService imageService;
 
     @Autowired
-    public DishRestController(DishService dishService) {
+    public DishRestController(DishService dishService, ImageService imageService) {
         this.dishService = dishService;
+        this.imageService = imageService;
     }
 
     @GetMapping
@@ -51,6 +57,20 @@ public class DishRestController {
 
         return dishService.getDishById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Dish with " + id + " id not found"));
+    }
+
+    @GetMapping("/img/{fileName}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<byte[]> getImageByDishId(@PathVariable String fileName) throws IOException {
+
+        byte[] imageBytes = imageService.downloadImageFromFileSystem(fileName);
+        if (imageBytes == null) {
+            throw new ResourceNotFoundException("Image not found with name: " + fileName);
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(imageBytes);
     }
 
 

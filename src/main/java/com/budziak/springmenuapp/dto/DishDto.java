@@ -14,4 +14,5 @@ public class DishDto {
     private String ingredients;
     private String recipe;
     private String category;
+    private String imageURL;
 }

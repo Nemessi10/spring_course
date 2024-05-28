@@ -16,6 +16,7 @@ import static com.budziak.springmenuapp.security.SecurityConstants.JWT_SECRET;
 public class JwtGenerator {
 
     public String generateToken(Authentication authentication) {
+
         String username = authentication.getName();
         Date currentDate = new Date();
         Date expireDate = new Date(currentDate.getTime() + JWT_EXPIRATION);
@@ -29,6 +30,7 @@ public class JwtGenerator {
     }
 
     public String getUsernameFromToken(String token) {
+
         Claims claims = Jwts.parser()
                 .setSigningKey(JWT_SECRET)
                 .parseClaimsJws(token)
@@ -37,6 +39,7 @@ public class JwtGenerator {
     }
 
     public boolean validateToken(String token) {
+
         try {
             Jwts.parser()
                     .setSigningKey(JWT_SECRET).parseClaimsJws(token);

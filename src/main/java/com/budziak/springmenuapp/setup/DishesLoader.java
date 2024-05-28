@@ -2,7 +2,6 @@ package com.budziak.springmenuapp.setup;
 
 import com.budziak.springmenuapp.domain.Dish;
 import com.budziak.springmenuapp.repository.DishRepository;
-import com.budziak.springmenuapp.service.DishService;
 import lombok.NonNull;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -24,7 +23,6 @@ public class DishesLoader implements ApplicationListener<ContextRefreshedEvent> 
     public void onApplicationEvent(@NonNull final ContextRefreshedEvent event) {
         if (alreadySetup) return;
 
-        // Create dishes
         createDishIfNotExists("Pancakes with Berries", "pancakes_with_berries.jpg",
                 "Flour, eggs, milk, sugar, butter, berries",
                 """

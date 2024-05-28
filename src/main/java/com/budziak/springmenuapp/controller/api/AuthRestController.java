@@ -73,7 +73,7 @@ public class AuthRestController {
         user.setUsername(registerDto.getUsername());
         user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
 
-        UserRole roles = roleRepository.findByName("USER")
+        UserRole roles = roleRepository.findByName("ROLE_USER")
                 .orElseThrow(() -> new InternalServerErrorException("An unexpected error"));
 
         user.setUserRoles(Collections.singleton(roles));

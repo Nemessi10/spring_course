@@ -1,7 +1,10 @@
 package com.budziak.springmenuapp.controller.web;
 
 import com.budziak.springmenuapp.domain.Dish;
+import com.budziak.springmenuapp.domain.Menu;
 import com.budziak.springmenuapp.dto.DishDto;
+import com.budziak.springmenuapp.exeption.NoContentException;
+import com.budziak.springmenuapp.exeption.ResourceNotFoundException;
 import com.budziak.springmenuapp.service.DishService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,28 +33,9 @@ public class DishController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String getAllDishes(Model model) {
         List<Dish> dishes = dishService.getAllDishes();
         model.addAttribute("dishes", dishes);
-        return "dish/index";
-    }
-
-    /*@PostMapping("/new")
-    //@PreAuthorize("hasRole('ADMIN')")
-    public String createDish(@RequestBody DishDto dishDto, @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
-
-        if (!SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(AuthorityUtils.createAuthorityList("ADMIN").get(0))) {
-            log.error("Користувач не має ролі ADMIN, доступ заборонено");
-        }
-
-        dishService.createDish(dishDto, imageFile);
-        return "redirect:/dish/form";
-    }*/
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDish(@PathVariable Long id) {
-        dishService.deleteDish(id);
-        return ResponseEntity.noContent().build();
+        return "dishes";
     }
 }

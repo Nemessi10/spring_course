@@ -27,6 +27,7 @@ public class ImageService {
     }
 
     public Image uploadImageToFileSystem(MultipartFile file) throws IOException {
+
         String filePath = folderPath + file.getOriginalFilename();
 
         Image image = Image.builder()
@@ -44,7 +45,7 @@ public class ImageService {
     public byte[] downloadImageFromFileSystem(String fileName) throws IOException {
 
         Optional<Image> fileData = imageRepository.findByName(fileName);
-        String filePath = fileData.get().getFilePath();
+        String filePath = fileData.orElseThrow().getFilePath();
 
         return Files.readAllBytes(new File(filePath).toPath());
     }

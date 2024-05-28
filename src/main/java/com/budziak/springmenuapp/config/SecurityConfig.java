@@ -32,7 +32,7 @@ public class  SecurityConfig {
         this.accessDeniedHandler = accessDeniedHandler;
     }
 
-@Bean
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
@@ -40,7 +40,8 @@ public class  SecurityConfig {
                         mather ->
                                 mather
                                         .requestMatchers(
-                                                "/api/auth/**")
+                                                "/api/auth/**",
+                                                "/auth/**")
                                         .permitAll())
                 .authorizeHttpRequests(matcher -> matcher.anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
@@ -51,7 +52,7 @@ public class  SecurityConfig {
                                         .accessDeniedHandler(accessDeniedHandler)
                                         .authenticationEntryPoint(authEntryPoint));
 
-    return http.build();
+        return http.build();
     }
 
 

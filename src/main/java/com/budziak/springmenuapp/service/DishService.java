@@ -50,6 +50,7 @@ public class DishService {
     }
 
     public Dish updateDish(Long id, DishDto dishDto, MultipartFile imageFile) throws IOException {
+
         Dish existingDish = dishRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Dish not found with id " + id));
 
@@ -72,6 +73,18 @@ public class DishService {
         } else {
             return existingImage;
         }
+    }
+
+    public byte[] getDishImage(Long dishId) throws IOException {
+
+        Dish dish = dishRepository.findById(dishId)
+                .orElseThrow(() -> new ResourceNotFoundException("Dish not found with id " + dishId));
+
+        if (dish.getImage() == null) {
+            throw new ResourceNotFoundException("Dish doesn't have an image associated");
+        }
+
+        return imageService.downloadImageFromFileSystem(dish.getImage().getFilePath());
     }
 
 

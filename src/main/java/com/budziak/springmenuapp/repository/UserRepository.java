@@ -12,10 +12,16 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
+
+
     List<UserEntity> findAll();
+
     Optional<UserEntity> findByUsername(String username);
+
     Boolean existsByUsername(String username);
+
     void deleteByUsername(String username);
+
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM UserEntity u WHERE :adminRole MEMBER OF u.userRoles")
     boolean isAnyAdminExist(UserRole adminRole);
 }
